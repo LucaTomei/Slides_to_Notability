@@ -85,14 +85,16 @@ if __name__ == '__main__':
 			
 			for image in output_files:
 				if image.endswith('.png'): write_image_over_squares(image)
+				elif image.endswith('.pdf'): os.remove(image)
 			
 			os.remove("out.png")
+
 
 			output_files = [f for f in os.listdir() if not f.startswith('.')]
 			from_images_to_pdf(output_files)
 
 			images_in_dir = get_all_images_in_dir(os.getcwd())
-			for image in images_in_dir:	os.remove(image)
+			#for image in images_in_dir:	os.remove(image)
 		
 		else:
 			print("There are no images in Input Directory")
