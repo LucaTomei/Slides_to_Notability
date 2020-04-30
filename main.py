@@ -7,6 +7,9 @@ def write_square_page():
 	file.write(content)
 	file.close() 
 
+def get_all_images_in_dir(path):
+	return [i for i in os.listdir(path) if i.lower().endswith('.png') or i.lower().endswith('.jpg')]
+
 def cut_image_horizontally(image_fname, output_folder = "../output"):
 	if not os.path.exists(output_folder):	os.mkdir(output_folder)
 
@@ -14,29 +17,30 @@ def cut_image_horizontally(image_fname, output_folder = "../output"):
 
 	im = Image.open(image_fname)
 	width, height = im.size
+	if height > 2000:
+		start_row = start_col = int(0)
+		end_row = int(height*.5)
+		end_col = int(width)
 
-	start_row = start_col = int(0)
-	end_row = int(height*.5)
-	end_col = int(width)
+		top_rectangle = (int(0), int(0), end_col, end_row)
+		bottom_rectangle = (0, end_row, end_col, end_row/2+end_col)
+		
+		os.chdir(output_folder)
 
-	top_rectangle = (int(0), int(0), end_col, end_row)
-	bottom_rectangle = (0, end_row, end_col, end_row/2+end_col)
-	
-	os.chdir(output_folder)
+		output_file = image_fname.split('.')[0]
+		cropped_im_top = im.crop(top_rectangle)
+		cropped_im_bottom = im.crop(bottom_rectangle)
 
-	output_file = image_fname.split('.')[0]
-	cropped_im_top = im.crop(top_rectangle)
-	cropped_im_bottom = im.crop(bottom_rectangle)
+		cropped_im_top.save(image_fname + "_1.png")
+		cropped_im_bottom.save(image_fname + "_2.png")
 
-	cropped_im_top.save(image_fname + "_1.png")
-	cropped_im_bottom.save(image_fname + "_2.png")
-
+	else:
+		os.chdir(output_folder)
+		im.save(image_fname)
 	os.chdir(curr_dir)
 	return output_folder
 
 
-
-#write_square_page()
 def write_image_over_squares(filename):
 	card = Image.open("out.png")
 	img = Image.open(filename).convert("RGBA")
@@ -47,6 +51,17 @@ def write_image_over_squares(filename):
 
 
 
+def from_images_to_pdf(images_list, pdf_filename = "output.pdf"):
+	images_list.sort()
+	tmp_image = Image.open(images_list[0])
+	
+	im_list = []
+
+	for image_name in images_list:	im_list.append(Image.open(image_name).convert('RGB'))
+	
+	tmp_image.convert('RGB').save(pdf_filename, "PDF" ,resolution=100.0, save_all=True, append_images=im_list)
+
+	
 
 if __name__ == '__main__':
 	curr_dir = os.getcwd()
@@ -55,18 +70,34 @@ if __name__ == '__main__':
 
 	os.chdir(input_dir)
 
-	for image in os.listdir():
-		if '.png' in image: output_folder = cut_image_horizontally(image)
+	input_files = [f for f in os.listdir() if not f.startswith('.')]
+	if len(input_files) > 0:
+		output_folder = ''
+		for image in input_files:
+			if image.endswith('.png'): output_folder = cut_image_horizontally(image)
 
-	os.chdir(output_folder)
+		if output_folder != '':
+			os.chdir(output_folder)
 
-	write_square_page()
-	for image in os.listdir():
-		if '.png' in image:	write_image_over_squares(image)
-	
-	os.remove("out.png")
+			write_square_page()
+			
+			output_files = [f for f in os.listdir() if not f.startswith('.')]
+			
+			for image in output_files:
+				if image.endswith('.png'): write_image_over_squares(image)
+			
+			os.remove("out.png")
+
+			output_files = [f for f in os.listdir() if not f.startswith('.')]
+			from_images_to_pdf(output_files)
+
+			images_in_dir = get_all_images_in_dir(os.getcwd())
+			for image in images_in_dir:	os.remove(image)
+		
+		else:
+			print("There are no images in Input Directory")
+	else:
+		print("Input Directory is Empty!")
 
 	os.chdir(curr_dir)
-
-
 
