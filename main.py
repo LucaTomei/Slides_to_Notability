@@ -94,7 +94,7 @@ if __name__ == '__main__':
 			from_images_to_pdf(output_files)
 
 			images_in_dir = get_all_images_in_dir(os.getcwd())
-			#for image in images_in_dir:	os.remove(image)
+			for image in images_in_dir:	os.remove(image)
 		
 		else:
 			print("There are no images in Input Directory")
