@@ -3,9 +3,8 @@
 If you can't take notes on slides that are too small to write on them or if you have too long slides, this program is for you.
 
 <div align="center">
-	<img src="input/o-02.png" width="800px"</img> 
-	<img src="output/o-02.png_1.png" width="400px"</img> 
-	<img src="output/o-02.png_2.png" width="400px"</img> 
+	<img src="screenshot/screenshot.jpg" width="800px"</img> 
+	
 </div>
 
 ## Usage
