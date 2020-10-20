@@ -207,5 +207,5 @@ if __name__ == '__main__':
 		output_filename = start_PDF_Extractor()
 		start_conversion(output_filename)
 
-	clean_input_folder()
+	clean_input_folder(curr_dir)
 	
