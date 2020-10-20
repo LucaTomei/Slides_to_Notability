@@ -78,7 +78,9 @@ def cut_image_horizontally(image_fname, output_folder = "../output"):
 
 	im = Image.open(image_fname)
 	width, height = im.size
-	if height > 2000:
+	#print(height, width)
+	
+	if height > 2500:	# Era 2000 ma convertite aumentano di dimensioni
 		start_row = start_col = int(0)
 		end_row = int(height*.5)
 		end_col = int(width)
@@ -202,7 +204,7 @@ if __name__ == '__main__':
 	photosInDir = get_all_images_in_dir(os.getcwd())
 	if len(pdfInDir) < len(photosInDir):
 		print("Start photo collage!")
-		start_conversion("output.pdf")
+		start_conversion(photosInDir[0].lower().replace('png', 'pdf'))
 	else:
 		output_filename = start_PDF_Extractor()
 		start_conversion(output_filename)
