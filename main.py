@@ -17,7 +17,7 @@ def pdf2PNG(filename):
 
 	text_url = response.json()['Files']
 	index = 0
-	print("Making single file!")
+	print("Splitting PDF pages into images!")
 	for file in text_url:
 		file_url = file['Url']
 		r = requests.get(file_url, allow_redirects=True)
@@ -80,7 +80,7 @@ def cut_image_horizontally(image_fname, output_folder = "../output"):
 	width, height = im.size
 	#print(height, width)
 	
-	if height > 2500:	# Era 2000 ma convertite aumentano di dimensioni
+	if height > width:	# Era 2000 ma convertite aumentano di dimensioni
 		start_row = start_col = int(0)
 		end_row = int(height*.5)
 		end_col = int(width)
@@ -96,7 +96,7 @@ def cut_image_horizontally(image_fname, output_folder = "../output"):
 
 		cropped_im_top.save(image_fname + "_1.png")
 		cropped_im_bottom.save(image_fname + "_2.png")
-
+		#sys.exit(1)
 	else:
 		os.chdir(output_folder)
 		im.save(image_fname)
@@ -121,7 +121,8 @@ def from_images_to_pdf(images_list, pdf_filename = "output.pdf"):
 	im_list = []
 
 	for image_name in images_list:	im_list.append(Image.open(image_name).convert('RGB'))
-	
+	del im_list[0]
+
 	tmp_image.convert('RGB').save(pdf_filename, "PDF" ,resolution=100.0, save_all=True, append_images=im_list)
 
 
@@ -152,6 +153,7 @@ def start_conversion(output_filename):
 			
 			output_files = [f for f in get_files_in_dir() if not f.startswith('.')]
 			
+
 			for image in output_files:
 				if image.endswith('.png'): write_image_over_squares(image)
 				elif image.endswith('.pdf'): os.remove(image)
@@ -160,8 +162,8 @@ def start_conversion(output_filename):
 
 
 			output_files = [f for f in get_files_in_dir() if not f.startswith('.')]
+			
 			from_images_to_pdf(output_files, output_filename)
-
 			images_in_dir = get_all_images_in_dir(os.getcwd())
 			for image in images_in_dir:	os.remove(image)
 		
