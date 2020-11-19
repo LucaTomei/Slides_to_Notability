@@ -194,6 +194,10 @@ def clean_input_folder(curr_dir):
 	os.chdir("input")
 	for file in os.listdir():	os.remove(file)
 
+def clean_output_folder(curr_dir):
+	os.chdir("output")
+	for file in os.listdir():	os.remove(file)
+
 if __name__ == '__main__':
 	curr_dir = os.getcwd()
 	input_dir = "input"
@@ -212,4 +216,10 @@ if __name__ == '__main__':
 		start_conversion(output_filename)
 
 	clean_input_folder(curr_dir)
+	print("Do you want to clean output folder?[y/n]")
+	response = input().lower()
+	if not 'n' in response:
+		clean_output_folder(curr_dir)
+
+
 	
